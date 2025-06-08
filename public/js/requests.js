@@ -6,7 +6,7 @@ var app = new Vue({
     methods: {
         async upvoteRequest(id) {
             const functions = firebase.app().functions('asia-south1');
-            functions.useEmulator('localhost', 5001);
+            // functions.useEmulator('localhost', 5001);
 
             const upvote = functions.httpsCallable('upvote');
             try {
