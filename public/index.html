@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Welcome to Firebase Hosting</title>
+  <title>Thought Meter</title>
 
   <!-- update the version number as needed -->
   <script src="/__/firebase/11.9.0/firebase-app-compat.js"></script>
@@ -55,10 +55,10 @@
   <!-- new request modal -->
   <div class="new-request">
     <div class="modal">
-      <h2>Request a Tutorial</h2>
+      <h2>Share Your Though</h2>
       <form>
         <input type="text" name="request" placeholder="Request...">
-        <button>Submit Request</button>
+        <button>Submit</button>
         <p class="error"></p>
       </form>
     </div>
@@ -66,13 +66,13 @@
 
   <header>
     <nav>
-      <a class="add-request">add request</a>
-      <a class="sign-out">sign out</a>
+      <a class="add-request">Share Thought</a>
+      <a class="sign-out">Sign Out</a>
     </nav>
   </header>
 
   <section class="content" id="app">
-    <h1>Tutorial Requests</h1>
+    <h1>Shared Thoughts</h1>
     <ul class="request-list">
       <li v-for="request in requests">
         <span class="text">{{request.text}}</span>
