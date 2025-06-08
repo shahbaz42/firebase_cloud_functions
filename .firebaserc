@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "hospital-appointement-booking"
-  }
+    "default": "thought-meter",
+    "new": "thought-meter-2"
+  },
+  "targets": {},
+  "etags": {}
 }
