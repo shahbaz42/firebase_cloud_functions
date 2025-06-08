@@ -2,6 +2,7 @@ import { HttpsError, onCall, onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
+import { FieldValue } from "firebase-admin/firestore";
 admin.initializeApp();
 
 // auth trigger (new user signup)
@@ -62,23 +63,47 @@ exports.addRequest = onCall({ region: "asia-south1" }, async (req) => {
   }
 });
 
-// http request 1
-exports.randomNumber = onRequest({ region: "asia-south1" }, (req, res) => {
-  const number = Math.floor(Math.random() * 10);
-  logger.info("Generated random number:", number);
-  res.send({
-    number: number,
-    message: "Random number generated successfully!",
+// upvote callable function
+exports.upvote = onCall({ region: "asia-south1" }, async (req) => {
+  if (!req.auth) {
+    throw new HttpsError(
+      "unauthenticated",
+      "Only authenticated users can add requests."
+    );
+  }
+
+  // get ref for userDoc and request doc
+  const user = await admin.firestore().collection("users").doc(req.auth.uid);
+  const request = await admin
+    .firestore()
+    .collection("request")
+    .doc(req.data.id);
+
+  const userDoc = await user.get();
+  const userData = userDoc.data();
+
+  if (!userData) {
+    throw new HttpsError("not-found", "User data not found.");
+  }
+
+  if (userData.upvotedOn.includes(req.data.id)) {
+    throw new HttpsError(
+      "failed-precondition",
+      "You have already upvoted this request."
+    );
+  }
+
+  // update user array
+  await user.update({
+    upvotedOn: [...userData.upvotedOn, req.data.id],
   });
+
+  // update request upvotes
+  await request.update({
+    upvotes: FieldValue.increment(1),
+  });
+
+  return {
+    message: "Upvote successful!",
+  };
 });
-
-// type HelloRequest = { name: string };
-// type HelloResponse = string;
-
-// // http callable function 2
-// exports.sayHello = onCall<HelloRequest, HelloResponse>(
-//   { region: "asia-south1" },
-//   (data, context) => {
-//     return `Hello, ${data.data.name}!`;
-//   }
-// );

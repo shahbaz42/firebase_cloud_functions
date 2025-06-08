@@ -4,7 +4,6 @@ const requestForm = document.querySelector('.new-request form');
 
 // open request modal
 requestLink.addEventListener('click', () => {
-    console.log("Opening request modal...");
     requestModal.classList.add('open');
 });
 
