@@ -1,5 +1,6 @@
 const requestModal = document.querySelector('.new-request');
 const requestLink = document.querySelector('.add-request');
+const requestForm = document.querySelector('.new-request form');
 
 // open request modal
 requestLink.addEventListener('click', () => {
@@ -14,13 +15,37 @@ requestModal.addEventListener('click', (e) => {
     }
 });
 
+// add a new request
+requestForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // get region-specific function reference
+    const functions = firebase.app().functions('asia-south1');
+
+    // connect to local emulator
+    functions.useEmulator('localhost', 5001);
+
+    const addRequest = functions.httpsCallable('addRequest');
+    addRequest({
+        text: requestForm.request.value
+    })
+        .then(() => {
+            requestForm.reset();
+            requestForm.querySelector('.error').textContent = '';
+            requestModal.classList.remove('open');
+        })
+        .catch(error => {
+            requestForm.querySelector('.error').textContent = error.message;
+        });
+});
+
 // say hello function call
 const button = document.querySelector('.call');
 
 button.addEventListener('click', () => {
     // get region-specific function reference
     const functions = firebase.app().functions('asia-south1');
-    
+
     // connect to local emulator
     functions.useEmulator('localhost', 5001);
 
