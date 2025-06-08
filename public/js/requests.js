@@ -13,13 +13,12 @@ var app = new Vue({
                 const res = await upvote({ id: id });
                 console.log('Upvote successful:', res.data);
             } catch (error) {
-                console.error('Error upvoting request:', error);
-                alert('Error: ' + error.message);
+                showNotification(error.message);
             }   
         }
     },
     mounted() {
-        const ref = firebase.firestore().collection('request');
+        const ref = firebase.firestore().collection('request').orderBy('upvotes', 'desc');
         ref.onSnapshot(snapshot => {
             let requests = [];
             snapshot.forEach(doc => {
